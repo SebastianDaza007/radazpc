@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-moss: #304538;
+  --color-lime: #a4be00;
+  --color-mist: #f0ffff;
+  --color-ink: #0a0a0a;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-mist);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

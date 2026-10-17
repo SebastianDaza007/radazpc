@@ -1,0 +1,790 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta charset="utf-8">
+<title>RaDaz PC</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<style>
+/* Concepto: taller técnico gamer. Placa de video como héroe, recortes lima en diagonal (los overlays de la marca),
+   paneles con título fijo que acompañan la lista al hacer scroll, presupuesto que se arma solo. */
+:root {
+  --ink: #070A08;
+  --ink-2: #0E1410;
+  --moss: #304538;
+  --moss-2: #1D2B22;
+  --lime: #A4BE00;
+  --lime-hi: #BBD60A;
+  --ice: #EFFDFC;
+  --mute: #9DB0A4;
+  --line: rgba(239, 253, 252, .14);
+  --display: "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  --body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ease: cubic-bezier(.65, .05, 0, 1);
+  --ease-snap: cubic-bezier(.19, 1, .22, 1);
+  --dur-xs: 150ms; --dur-sm: 300ms; --dur-md: 600ms; --dur-lg: 750ms;
+  --stagger-word: 30ms;
+  --nav-h: 68px;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); }
+body {
+  margin: 0; background: var(--ink); color: var(--ice);
+  font: 400 16px/1.55 var(--body);
+  padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--lime-hi); outline-offset: 3px; border-radius: 4px; }
+.wrap { width: min(1200px, 100%); margin-inline: auto; }
+.display { font-family: var(--display); font-stretch: 125%; font-weight: 800; letter-spacing: -.01em; text-wrap: balance; line-height: 1.02; }
+.eyebrow { font: 700 12px/1 var(--display); font-stretch: 125%; letter-spacing: .16em; text-transform: uppercase; color: var(--lime); }
+.num { font-variant-numeric: tabular-nums; }
+.skip { position: absolute; left: -999px; top: 8px; background: var(--lime); color: var(--ink); padding: 10px 14px; z-index: 200; font-weight: 700; }
+.skip:focus { left: 16px; }
+
+/* Botones */
+.btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border-radius: 4px; border: 2px solid var(--lime);
+  font: 800 13px/1 var(--display); font-stretch: 125%; letter-spacing: .06em; text-transform: uppercase; text-decoration: none;
+  transition: background .45s var(--ease), color .45s var(--ease), transform .45s var(--ease); }
+.btn-primary { background: var(--lime); color: var(--ink); }
+.btn-primary:hover { background: var(--lime-hi); transform: translateY(-2px); }
+.btn-ghost { background: transparent; color: var(--ice); border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--lime); color: var(--lime); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+
+/* Pantalla de carga: cortina lima, solo en la primera visita de la sesión */
+.loader { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; background: var(--lime); clip-path: inset(0);
+  transition: clip-path var(--dur-lg) var(--ease); animation: loaderFail .01s 3.5s forwards; }
+.loader-logo { width: min(180px, 44vw); filter: brightness(0); animation: isoIn .7s cubic-bezier(.2, .9, .25, 1) both; transition: transform var(--dur-md) var(--ease), opacity var(--dur-sm) linear; }
+.loader.is-leaving { clip-path: inset(0 0 100% 0); }
+.loader.is-leaving .loader-logo { transform: translateY(-24px); opacity: 0; }
+.loader.is-gone { display: none; }
+@keyframes isoIn { from { opacity: 0; transform: scale(.7); } }
+@keyframes loaderFail { to { visibility: hidden; } }
+
+/* Navegación */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; height: var(--nav-h); margin-inline: calc(var(--gutter-l) * -1) calc(var(--gutter-r) * -1);
+  padding-inline: var(--gutter-l) var(--gutter-r); background: rgba(7, 10, 8, .82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.nav-in { width: min(1200px, 100%); height: 100%; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand img:first-child { width: 38px; border-radius: 6px; }
+.brand img:last-child { height: 20px; width: auto; }
+.nav-links { display: flex; gap: 6px; }
+.nav-links a { padding: 10px 12px; font: 700 12px/1 var(--display); font-stretch: 125%; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; color: var(--mute); border-radius: 4px; }
+@media (max-width: 920px) { .nav-links { display: none; } }
+@media (max-width: 420px) { .brand img:last-child { display: none; } }
+
+/* Hero */
+.hero { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(24px, 4vw, 64px); align-items: center; padding-block: clamp(32px, 6vw, 72px); }
+.hero h1 { font-size: clamp(2.1rem, 5.6vw, 4.4rem); }
+.hero h1 em { font-style: normal; color: var(--lime); }
+.hero-sub { margin-top: 22px; max-width: 52ch; color: #C9D8CF; font-size: 1.08rem; }
+.hero-cta { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-proof { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; color: var(--mute); font-size: .92rem; }
+.stars { display: inline-flex; gap: 2px; color: var(--lime); vertical-align: -3px; }
+.stars svg { width: 16px; height: 16px; }
+.hero-proof strong { color: var(--ice); }
+.photo { position: relative; aspect-ratio: 1 / 1.02; background: var(--moss-2); overflow: hidden; border-radius: 4px; }
+.photo img.ph { position: absolute; inset: -6% 0; width: 100%; height: 112%; object-fit: cover; transform: translateY(calc(var(--p, 0) * -26px)); }
+.photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(7, 10, 8, .55)); }
+.photo .corner { position: absolute; top: 0; right: 0; width: 38%; aspect-ratio: 2.4 / 1; background: var(--lime); clip-path: polygon(0 0, 100% 0, 100% 100%, 22% 100%); z-index: 2; display: grid; place-items: center; padding-left: 16%; }
+.photo .corner img { width: 62%; filter: brightness(0); }
+.photo .tag { position: absolute; left: 0; bottom: 0; z-index: 2; background: var(--lime); color: var(--ink); padding: 14px 40px 14px 18px; clip-path: polygon(0 0, 88% 0, 100% 100%, 0 100%);
+  font: 800 clamp(.85rem, 1.6vw, 1.05rem)/1.15 var(--display); font-stretch: 125%; }
+.tag small { display: block; font: 600 .7rem/1.3 var(--body); letter-spacing: .04em; margin-bottom: 4px; }
+@media (max-width: 880px) { .hero { grid-template-columns: 1fr; } .photo { aspect-ratio: 1 / .8; } }
+
+/* Ticker */
+.ticker { background: var(--lime); color: var(--ink); overflow: hidden; transform: skewY(-1.2deg); border-block: 2px solid var(--ink); }
+.ticker-track { display: flex; width: max-content; }
+.ticker span { display: inline-flex; align-items: center; gap: 22px; padding: 14px 22px 14px 0; font: 800 clamp(.95rem, 2vw, 1.2rem)/1 var(--display); font-stretch: 125%; text-transform: uppercase; white-space: nowrap; }
+.ticker span::after { content: ""; width: 26px; height: 12px; background: repeating-linear-gradient(115deg, var(--ink) 0 4px, transparent 4px 8px); }
+
+/* Secciones */
+section { padding-block: clamp(56px, 8vw, 104px); }
+.sec-head { max-width: 760px; margin-bottom: clamp(28px, 4vw, 52px); }
+.sec-head h2 { font-size: clamp(1.7rem, 4vw, 3rem); margin-top: 14px; }
+.sec-head p { margin-top: 16px; color: #C0CFC6; max-width: 60ch; }
+.reveal { opacity: 1; }
+@supports (animation-timeline: view()) {
+  .reveal { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
+  @keyframes rise { from { opacity: .4; transform: translateY(34px); } }
+}
+
+/* Servicios: título fijo + lista */
+.svc { display: grid; grid-template-columns: minmax(260px, 380px) 1fr; gap: clamp(20px, 4vw, 56px); padding-block: 28px; border-top: 1px solid var(--line); align-items: start; }
+.svc-card { position: sticky; top: calc(var(--nav-h) + 20px); background: var(--moss); border-radius: 6px; padding: 26px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%); overflow: hidden; }
+.svc-card::before { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(164, 190, 0, .35), transparent 65%); }
+.svc-card img { width: 88px; height: 88px; object-fit: contain; margin-bottom: 18px; transition: transform .35s cubic-bezier(.2, .9, .25, 1); }
+.svc-card:hover img { transform: rotate(-6deg) scale(1.08); }
+.svc-card h3 { font-size: clamp(1.25rem, 2.3vw, 1.7rem); }
+.svc-card p { margin-top: 12px; color: #D5E3DA; font-size: .95rem; }
+.svc-card .count { margin-top: 18px; display: inline-block; font: 700 12px/1 var(--display); font-stretch: 125%; letter-spacing: .1em; text-transform: uppercase; color: var(--lime); }
+.rows { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px 18px; align-items: center; padding: 18px 16px; border-bottom: 1px solid var(--line); transition: background .45s var(--ease), color .45s var(--ease); }
+.row h4 { margin: 0; font: 700 1.02rem/1.3 var(--body); }
+.row p { margin-top: 4px; color: var(--mute); font-size: .88rem; max-width: 58ch; transition: color .45s var(--ease); }
+.row .price { font: 800 1.05rem/1.1 var(--display); font-stretch: 112%; text-align: right; white-space: nowrap; color: var(--lime); transition: color .45s var(--ease); }
+.row .price small { display: block; margin-top: 4px; font: 500 .72rem/1.2 var(--body); color: var(--mute); letter-spacing: .02em; transition: color .45s var(--ease); }
+.row:hover, .row:focus-within { background: var(--lime); color: var(--ink); }
+.row:hover p, .row:hover .price, .row:hover .price small, .row:focus-within p, .row:focus-within .price, .row:focus-within .price small { color: var(--ink); }
+.add { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line); background: transparent; display: grid; place-items: center; transition: background .45s var(--ease), border-color .45s var(--ease), color .45s var(--ease), transform .45s var(--ease); }
+.add svg { width: 18px; height: 18px; transition: transform .2s; }
+.add:hover { transform: scale(1.08); }
+.row:hover .add, .row:focus-within .add { border-color: var(--ink); }
+.add[aria-pressed="true"] { background: var(--lime); border-color: var(--lime); color: var(--ink); }
+.row:hover .add[aria-pressed="true"], .row:focus-within .add[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--lime); }
+.add[aria-pressed="true"] svg { transform: rotate(45deg); }
+.row.noadd { grid-template-columns: 1fr auto; }
+@media (max-width: 860px) {
+  .svc { grid-template-columns: 1fr; }
+  .svc-card { position: relative; top: 0; display: grid; grid-template-columns: 72px 1fr; column-gap: 18px; padding: 20px; }
+  .svc-card img { width: 72px; height: 72px; margin: 0; grid-row: span 3; }
+  .row { grid-template-columns: 1fr auto; }
+  .row .price { grid-column: 1; text-align: left; }
+  .row .add { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+/* Presupuesto */
+.quote { background: var(--ink-2); border: 1px solid var(--line); border-radius: 8px; display: grid; grid-template-columns: 1.1fr .9fr; overflow: hidden; }
+.quote-list { padding: clamp(20px, 3vw, 36px); }
+.quote-list h3 { font-size: 1.3rem; }
+.sample-note { margin-top: 8px; color: var(--mute); font-size: .9rem; }
+.picked { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 10px; }
+.picked li { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; padding: 14px 16px; background: var(--moss-2); border-radius: 4px; animation: pop .3s ease both; }
+@keyframes pop { from { opacity: 0; transform: translateX(-10px); } }
+.picked .nm { font-weight: 700; font-size: .96rem; line-height: 1.3; }
+.picked .pr { font: 800 .95rem/1 var(--display); font-stretch: 112%; color: var(--lime); text-align: right; white-space: nowrap; }
+.picked select { margin-top: 8px; width: 100%; }
+.rm { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: none; display: grid; place-items: center; }
+.rm:hover { border-color: var(--lime); color: var(--lime); }
+.rm svg { width: 16px; height: 16px; }
+.empty { padding: 28px; border: 1px dashed var(--line); border-radius: 4px; color: var(--mute); text-align: center; }
+.quote-total { padding: clamp(20px, 3vw, 36px); background: var(--lime); color: var(--ink); display: flex; flex-direction: column; gap: 14px; clip-path: polygon(34px 0, 100% 0, 100% 100%, 0 100%, 0 34px); }
+.quote-total .lbl { font: 800 12px/1 var(--display); font-stretch: 125%; letter-spacing: .14em; text-transform: uppercase; }
+.quote-total .big { font: 800 clamp(1.8rem, 3.6vw, 2.7rem)/1.05 var(--display); font-stretch: 118%; letter-spacing: -.02em; }
+.quote-total .fine { font-size: .86rem; line-height: 1.45; }
+.quote-total .btn { background: var(--ink); color: var(--lime); border-color: var(--ink); justify-content: center; }
+.quote-total .btn:hover { background: #0F1A12; }
+.quote-total .field { display: grid; gap: 6px; }
+.quote-total label { font-weight: 700; font-size: .85rem; }
+.quote-total .usd { font-weight: 700; font-size: .95rem; min-height: 1.2em; }
+@media (max-width: 900px) { .quote { grid-template-columns: 1fr; } .quote-total { clip-path: none; } }
+select, input, textarea { width: 100%; min-height: 46px; padding: 10px 12px; border-radius: 4px; border: 2px solid var(--line); background: var(--ink); color: var(--ice); font: 400 1rem/1.3 var(--body); }
+textarea { min-height: 120px; resize: vertical; }
+.quote-total select { background: var(--ice); color: var(--ink); border-color: var(--ink); }
+select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--lime-hi); outline-offset: 2px; }
+.minibar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: var(--lime); color: var(--ink); display: none; align-items: center; justify-content: space-between; gap: 12px; text-decoration: none; font-weight: 800; }
+.minibar b { font: 800 1rem/1 var(--display); font-stretch: 112%; }
+@media (max-width: 860px) { .minibar.on { display: flex; } body { padding-bottom: 0; } }
+
+/* Trabajos antes/después */
+.ba-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.ba { --pos: 50%; }
+.ba-fig { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 6px; background: var(--moss-2); user-select: none; }
+.ba-layer { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 24px 22px 34px; }
+.ba-layer > div { max-width: 44%; }
+.ba-before { justify-content: flex-start; text-align: left; background: repeating-linear-gradient(135deg, #1a1d1a 0 14px, #141714 14px 28px); color: #7e877f; }
+.ba-after { justify-content: flex-end; text-align: right; background: linear-gradient(160deg, var(--moss), #1f3a2a 60%, #112015); clip-path: inset(0 0 0 var(--pos)); color: var(--lime); }
+.ba-layer b { display: block; font: 800 1.1rem/1.1 var(--display); font-stretch: 125%; text-transform: uppercase; }
+.ba-layer span { display: block; margin-top: 8px; font-size: .8rem; color: inherit; opacity: .85; }
+.ba-label { position: absolute; top: 14px; padding: 6px 10px; background: var(--ink); color: var(--ice); font: 800 11px/1 var(--display); font-stretch: 125%; letter-spacing: .12em; }
+.ba-label.l { left: 14px; } .ba-label.r { right: 14px; background: var(--lime); color: var(--ink); }
+.ba-handle { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 3px; background: var(--lime); transform: translateX(-1.5px); pointer-events: none; }
+.ba-handle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; border-radius: 50%; background: var(--lime); transform: translate(-50%, -50%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23070A08' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l-6 6 6 6M15 6l6 6-6 6'/%3E%3C/svg%3E"); background-size: 26px; background-repeat: no-repeat; background-position: center; }
+.ba input[type=range] { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; opacity: 0; cursor: ew-resize; margin: 0; padding: 0; border: 0; }
+.ba:focus-within .ba-handle::after { outline: 3px solid var(--ice); outline-offset: 3px; }
+.ba figcaption { margin-top: 12px; display: flex; justify-content: space-between; gap: 12px; font-weight: 700; }
+.ba figcaption span { color: var(--mute); font-weight: 400; font-size: .85rem; }
+.ba-note { margin-top: 22px; padding: 14px 18px; border-left: 4px solid var(--lime); background: var(--moss-2); color: #D3E1D8; font-size: .92rem; }
+@media (max-width: 900px) { .ba-grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+/* Sucursales */
+.rating { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 22px; }
+.rating .big { font: 800 clamp(2.4rem, 6vw, 4rem)/1 var(--display); font-stretch: 125%; color: var(--lime); }
+.branches { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.branch { background: var(--ink-2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+.map { position: relative; aspect-ratio: 16 / 8; background: #0C1510; overflow: hidden; }
+.map > svg { width: 100%; height: 100%; display: block; }
+.map .btn svg { width: 16px; height: 16px; }
+.map a { position: absolute; right: 12px; bottom: 12px; }
+.map .btn { min-height: 40px; padding: 0 14px; font-size: 11px; background: var(--ink); border-color: var(--lime); color: var(--lime); }
+.map .btn:hover { background: var(--lime); color: var(--ink); }
+.branch-body { padding: clamp(18px, 2.4vw, 28px); display: grid; gap: 16px; }
+.branch h3 { font-size: 1.35rem; }
+.meta { display: grid; gap: 10px; font-size: .95rem; color: #D0DED5; }
+.meta div { display: flex; align-items: flex-start; gap: 10px; }
+.meta svg { width: 18px; height: 18px; color: var(--lime); flex: none; margin-top: 3px; }
+.copy { margin-left: auto; padding: 6px 10px; border: 1px solid var(--line); background: none; border-radius: 4px; font-size: .78rem; min-height: 32px; }
+.copy:hover { border-color: var(--lime); color: var(--lime); }
+.reviews { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.reviews li { padding: 14px 16px; background: var(--moss-2); border-radius: 4px; font-size: .95rem; }
+.reviews cite { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-style: normal; font-size: .76rem; color: var(--mute); }
+.reviews .stars svg { width: 12px; height: 12px; }
+@media (max-width: 900px) { .branches { grid-template-columns: 1fr; } }
+
+/* Quiénes somos */
+.about { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(24px, 5vw, 72px); align-items: center; }
+.about-fig { position: relative; max-width: 440px; justify-self: center; }
+.about-fig img { border-radius: 6px; width: 100%; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 36px), calc(100% - 36px) 100%, 0 100%); }
+.about-fig::before { content: ""; position: absolute; inset: 18px -18px -18px 18px; border: 2px solid var(--lime); border-radius: 6px; z-index: -1; }
+.about p { color: #C8D7CE; max-width: 58ch; margin-top: 16px; }
+.values { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 26px; }
+.values div { padding: 14px 16px; background: var(--moss-2); border-left: 4px solid var(--lime); font: 800 .85rem/1.2 var(--display); font-stretch: 118%; text-transform: uppercase; letter-spacing: .03em; }
+.quote-line { margin-top: 26px; font: 800 clamp(1.1rem, 2.2vw, 1.5rem)/1.2 var(--display); font-stretch: 125%; color: var(--lime); }
+@media (max-width: 860px) { .about { grid-template-columns: 1fr; } .about-fig { max-width: 250px; } }
+
+/* FAQ */
+.faq { max-width: 860px; }
+details { border-bottom: 1px solid var(--line); }
+summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 4px; cursor: pointer; font: 700 1.05rem/1.35 var(--body); min-height: 56px; }
+summary::-webkit-details-marker { display: none; }
+summary svg { width: 22px; height: 22px; flex: none; color: var(--lime); transition: transform .25s; }
+details[open] summary svg { transform: rotate(45deg); }
+details p { padding: 0 4px 24px; color: #C3D2C9; max-width: 66ch; }
+
+/* Contacto */
+.contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 64px); background: var(--moss); border-radius: 8px; padding: clamp(24px, 4vw, 52px); clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), calc(100% - 40px) 100%, 0 100%); }
+.contact h2 { font-size: clamp(1.7rem, 4vw, 2.8rem); margin-top: 14px; }
+.contact p { margin-top: 16px; color: #DCE8E0; max-width: 46ch; }
+form { display: grid; gap: 14px; }
+.f { display: grid; gap: 6px; }
+.f label { font-weight: 700; font-size: .86rem; }
+.contact .btn { justify-content: center; }
+.form-hint { font-size: .84rem; color: #DCE8E0; margin: 0; }
+@media (max-width: 860px) { .contact { grid-template-columns: 1fr; } }
+
+/* Footer */
+footer { margin-top: 28px; padding: 56px 32px calc(48px + 60px); }
+.foot { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; font-size: .92rem; color: var(--mute); }
+.foot img.iso { width: 150px; }
+.foot h4 { margin: 0 0 12px; font: 800 12px/1 var(--display); font-stretch: 125%; letter-spacing: .14em; text-transform: uppercase; color: var(--ice); }
+.foot a { display: block; padding: 4px 0; text-decoration: none; }
+.foot a:hover { color: var(--lime); }
+.legal { margin-top: 36px; font-size: .78rem; color: #6F8176; }
+@media (max-width: 760px) { .foot { grid-template-columns: 1fr; } }
+
+
+/* Movimiento: una sola curva para todo, como en landonorris.com (medida, no copiada) */
+.progress { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; height: 3px; background: var(--lime); transform-origin: 0 50%; transform: scaleX(0); z-index: 70; pointer-events: none; }
+@supports (animation-timeline: scroll()) { .progress { animation: prog linear both; animation-timeline: scroll(root); } @keyframes prog { to { transform: scaleX(1); } } }
+.nav-links a { position: relative; isolation: isolate; transition: color var(--dur-xs) linear var(--dur-xs), box-shadow .45s var(--ease); }
+.nav-links a::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 4px; background: var(--lime); transform: scaleX(0); transform-origin: right center; transition: transform var(--dur-md) var(--ease-snap); }
+.nav-links a:hover::before, .nav-links a:focus-visible::before { transform: scaleX(1); transform-origin: left center; }
+.nav-links a:hover, .nav-links a:focus-visible { color: var(--ink); }
+.nav-links a.on { color: var(--lime); box-shadow: inset 0 -2px 0 var(--lime); }
+.js .split .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+.js .split .w > span { display: inline-block; transform: translateY(112%); transition: transform .9s var(--ease); transition-delay: calc(var(--i, 0) * var(--stagger-word)); }
+.js .split.in .w > span { transform: none; }
+.js .clip { clip-path: inset(0 0 100% 0); transition: clip-path .9s var(--ease); }
+.js .clip.in { clip-path: inset(0 0 0 0); }
+.rz-type::after { content: ""; display: inline-block; width: .55em; height: 1em; margin-left: .2em; vertical-align: -.14em; background: var(--lime); display: none; }
+.rz-type.is-typing::after, .rz-type.is-done::after { display: inline-block; }
+.rz-type.is-done::after { animation: caretOut var(--dur-sm) steps(2) 3 forwards; }
+@keyframes caretOut { 50% { opacity: 0; } 100% { opacity: 0; width: 0; } }
+.btn .arr { transition: transform var(--dur-md) var(--ease-snap); }
+.btn:hover .arr, .btn:focus-visible .arr { transform: rotate(-45deg); }
+.ticker-wrap { position: relative; margin: 18px calc(var(--gutter-r) * -1) 18px calc(var(--gutter-l) * -1); }
+.ticker-toggle { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: -16px; z-index: 5; min-height: 34px; padding: 0 12px; background: var(--ink); color: var(--lime); border: 1px solid var(--lime); border-radius: 4px; font: 700 11px/1 var(--display); font-stretch: 125%; letter-spacing: .08em; text-transform: uppercase; }
+.ticker-toggle:hover { background: var(--lime); color: var(--ink); }
+footer { position: relative; }
+.foot-frame { position: absolute; inset: 0; border: 8px solid var(--lime); border-radius: 22px; pointer-events: none; }
+@supports (animation-timeline: view()) {
+  .foot-frame { animation: frameIn linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+  @keyframes frameIn { from { clip-path: inset(50% 50% 50% 50% round 22px); } to { clip-path: inset(0 0 0 0 round 22px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-xs: 0ms; --dur-sm: 0ms; --dur-md: 0ms; --dur-lg: 0ms; --stagger-word: 0ms; }
+  .foot-frame { animation: none; clip-path: none; }
+  .ticker-toggle { display: none; }
+  .ticker-track { width: auto; flex-wrap: wrap; justify-content: center; }
+  .js .split .w > span { transform: none; transition: none; }
+  .js .clip { clip-path: none; transition: none; }
+  .progress { display: none; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .loader { display: none; }
+  .reveal { animation: none; }
+  .ticker-track { animation: none; }
+  .photo img.ph { transform: none; }
+}
+</style>
+
+<a class="skip" href="#servicios">Saltar al contenido</a>
+
+<div class="progress" aria-hidden="true"></div>
+<div class="loader" data-rz-loader aria-hidden="true"><img class="loader-logo" src="ASSET:img01.webp" alt=""></div>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#inicio" aria-label="RaDaz PC, inicio"><img src="ASSET:img02.svg" alt=""><img src="ASSET:img03.webp" alt="RaDaz PC"></a>
+    <nav class="nav-links" aria-label="Principal">
+      <a href="#servicios">Servicios</a><a href="#presupuesto">Presupuesto</a><a href="#trabajos">Trabajos</a><a href="#sucursales">Sucursales</a><a href="#faq">Preguntas</a>
+    </nav>
+    <a class="btn btn-primary" id="navWa" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp
+    </a>
+  </div>
+</header>
+
+<main id="inicio" class="wrap">
+  <div class="hero">
+    <div>
+      <p class="eyebrow rz-type" data-rz-type>Servicio técnico de PC en Salta</p>
+      <h1 class="display" style="margin-top:18px">Tu PC rinde más. <em>Nosotros nos encargamos.</em></h1>
+      <p class="hero-sub">Mantenimiento a fondo, pasta térmica, instalación de sistemas y ensamble de componentes. Con precios a la vista y presupuesto armado en minutos.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#presupuesto">Armar mi presupuesto <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost" href="#servicios">Ver servicios y precios</a>
+      </div>
+      <div class="hero-proof">
+        <span><span class="stars" role="img" aria-label="5 de 5 estrellas"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg></span> <strong>5,0</strong> en Google</span>
+        <span><strong class="num">158</strong> opiniones en dos sucursales</span>
+      </div>
+    </div>
+    <div class="photo clip" role="img" aria-label="Placa de video Sapphire Nitro durante un cambio de pasta térmica, con un monitor encendido detrás">
+      <img class="ph" src="ASSET:img04.webp" alt="" width="1400" height="1283">
+      <div class="corner"><img src="ASSET:img01.webp" alt=""></div>
+      <div class="tag"><small>Trabajo real en el taller</small>Cambio de pasta térmica</div>
+    </div>
+  </div>
+</main>
+
+<div class="ticker-wrap"><div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div><button class="ticker-toggle" type="button" aria-pressed="false">Pausar</button></div>
+
+<main class="wrap">
+  <section id="servicios">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Servicios y precios</p>
+      <h2 class="display">Todo lo que le hacemos a tu PC, con el precio al lado.</h2>
+      <p>Tocá el botón + de cualquier servicio para sumarlo a tu presupuesto. Los precios están en pesos argentinos y los que dicen "consultar" se confirman por WhatsApp.</p>
+    </div>
+    <div id="groups"></div>
+  </section>
+
+  <section id="presupuesto">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Presupuesto</p>
+      <h2 class="display">Armá tu presupuesto y mandalo por WhatsApp.</h2>
+      <p>Es una estimación. El precio final lo confirmamos cuando vemos tu equipo.</p>
+    </div>
+    <div class="quote reveal">
+      <div class="quote-list">
+        <h3 class="display">Tu selección</h3>
+        <p class="sample-note" id="sampleNote">Dejamos dos servicios de ejemplo. Sacalos o sumá los tuyos desde la lista.</p>
+        <ul class="picked" id="picked" aria-live="polite"></ul>
+      </div>
+      <div class="quote-total">
+        <span class="lbl">Total estimado</span>
+        <div class="big num" id="total" aria-live="polite">$ 0</div>
+        <div class="usd" id="usd"></div>
+        <div class="field">
+          <label for="branchSel">Sucursal para enviar la consulta</label>
+          <select id="branchSel"></select>
+        </div>
+        <a class="btn" id="quoteWa" href="#" target="_blank" rel="noopener">Abrir WhatsApp con mi presupuesto</a>
+        <p class="fine">Se abre WhatsApp con el mensaje ya escrito. Lo enviás vos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="trabajos">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Trabajos</p>
+      <h2 class="display">Antes y después de cada equipo.</h2>
+      <p>Arrastrá el control para ver cómo llega el equipo y cómo se lo lleva el cliente.</p>
+    </div>
+    <div class="ba-grid" id="ba"></div>
+    <p class="ba-note">Los tres marcos son de ejemplo. Falta cargar las fotos reales de antes y después de los equipos.</p>
+  </section>
+
+  <section id="sucursales">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Sucursales y opiniones</p>
+      <h2 class="display">Dos puntos en Salta. Clientes que ya nos eligieron.</h2>
+      <div class="rating">
+        <span class="big num">5,0</span>
+        <span><span class="stars" role="img" aria-label="5 de 5 estrellas"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg></span><br><span style="color:var(--mute);font-size:.9rem">158 opiniones en Google entre las dos sucursales</span></span>
+      </div>
+    </div>
+    <div class="branches" id="branches"></div>
+  </section>
+
+  <section id="nosotros">
+    <div class="about">
+      <div class="about-fig reveal"><img src="ASSET:img05.webp" alt="El Sabio, personaje de la marca: un mago sentado con una placa de video como cabeza y el isotipo de RaDaz PC en la pantalla" width="760" height="1034"></div>
+      <div class="reveal">
+        <p class="eyebrow">Quiénes somos</p>
+        <h2 class="display" style="margin-top:14px;font-size:clamp(1.7rem,4vw,3rem)">El aliado técnico de tu PC.</h2>
+        <p>RaDaz PC ofrece servicios personalizados y de alta calidad en mantenimiento y personalización de PC. Buscamos que cada cliente se lleve su equipo funcionando mejor y entienda qué se le hizo.</p>
+        <p>Combinamos conocimiento técnico con transparencia: te explicamos el problema en palabras simples, te pasamos el precio antes de empezar y te contamos el resultado.</p>
+        <div class="values"><div>Confianza</div><div>Experticia</div><div>Transparencia</div><div>Compromiso con el aprendizaje</div></div>
+        <p class="quote-line">Tu experiencia, nuestra prioridad.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Preguntas frecuentes</p>
+      <h2 class="display">Antes de escribirnos.</h2>
+    </div>
+    <div class="faq reveal" id="faqList"></div>
+  </section>
+
+  <section id="contacto">
+    <div class="contact reveal">
+      <div>
+        <p class="eyebrow" style="color:var(--ice)">Contacto</p>
+        <h2 class="display">Contanos qué le pasa a tu equipo.</h2>
+        <p>Completá los datos y se abre WhatsApp con tu consulta lista para enviar. También podés escribirnos directo a cualquiera de las dos sucursales.</p>
+      </div>
+      <form id="contactForm" novalidate>
+        <div class="f"><label for="cName">Tu nombre</label><input id="cName" autocomplete="name" placeholder="Ej: Martina"></div>
+        <div class="f"><label for="cType">Tipo de equipo</label>
+          <select id="cType"><option>PC de escritorio</option><option>Notebook</option><option>PC armada por mí</option><option>Otro</option></select></div>
+        <div class="f"><label for="cBranch">Sucursal</label><select id="cBranch"></select></div>
+        <div class="f"><label for="cMsg">Qué necesitás o qué le pasa</label><textarea id="cMsg" placeholder="Ej: se calienta y hace mucho ruido cuando juego"></textarea></div>
+        <a class="btn btn-primary" id="formWa" href="#" target="_blank" rel="noopener">Abrir WhatsApp con mi consulta</a>
+        <p class="form-hint">Se abre WhatsApp con el mensaje escrito. Lo enviás vos.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-frame" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="foot">
+      <div><img class="iso" src="ASSET:img03.webp" alt="RaDaz PC"><p style="margin-top:14px">Tu experiencia, nuestra prioridad.</p></div>
+      <div><h4>Sucursales</h4><div id="footBranches"></div></div>
+      <div><h4>Redes</h4>
+        <a href="https://www.instagram.com/radazpc/" target="_blank" rel="noopener">Instagram @radazpc</a>
+        <a href="https://www.facebook.com/radazpc" target="_blank" rel="noopener">Facebook RaDaz PC</a>
+      </div>
+    </div>
+    <p class="legal">Precios en pesos argentinos, sujetos a cambio. Valoraciones y cantidad de opiniones según las fichas de Google de cada sucursal al 14/10/2026.</p>
+  </div>
+</footer>
+
+<a class="minibar" id="minibar" href="#presupuesto"><span id="miniCount">0 servicios</span><b id="miniTotal"></b></a>
+
+<script>
+(function () {
+  var ICON = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    out: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>',
+    wa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z"/></svg>'
+  };
+  var IMG = { pc: "ASSET:img06.webp", gpu: "ASSET:img07.webp" };
+
+  /* Datos: salen de las planillas PRECIOS_SERVICIO y DATOS_GPU_PRECIO */
+  var GPU = [
+    { l: 'NVIDIA serie 1000 · AMD serie 500', p: 30000 },
+    { l: 'NVIDIA serie 2000 · AMD serie 5000', p: 32500 },
+    { l: 'NVIDIA serie 3000 · AMD serie 6000', p: 35500 },
+    { l: 'NVIDIA serie 4000 · AMD serie 7000', p: 38000 }
+  ];
+  var BRANCHES = [
+    { id: 'aguaray', n: 'Sucursal Aguaray', addr: 'Aguaray 26, Salta', tel: '0387 565-9971', wa: '5493875659971', rating: '5,0', count: 100, closes: 'Cierra a las 23:00',
+      maps: 'https://share.google/foh3FmaJg60LdA0tW', seed: 3,
+      rev: ['Excelente servicio, rápido y efectivo.', 'Muy buena atención, me solucionaron el problema en muy poco tiempo.', 'Muy buena atención, rápidos y confiables en la entrega.'] },
+    { id: 'norte', n: 'Sucursal Zona Norte', addr: 'Barrio Universidad Católica, Mz. 507 Casa 18, San Mateo Apóstol esquina San Pedro Apóstol, Salta', tel: '0387 527-8489', wa: '5493875278489', rating: '5,0', count: 58, closes: 'Cierra a las 23:00',
+      maps: 'https://share.google/1ElvXF3u6CROHY2Il', seed: 7,
+      rev: ['Excelente atención, me hicieron cambio de pasta en CPU y GPU.', 'Buena atención, precios accesibles y trabajo de muy buena calidad.', 'Excelente servicio, información clara, recomendable 100%.'] }
+  ];
+  var GROUPS = [
+    { id: 'mant', icon: 'gpu', t: 'Mantenimiento y limpieza', b: 'Limpieza a fondo, orden de cables y cambio de pasta térmica Arctic MX-4.', items: [
+      { id: 'diag', n: 'Revisión y diagnóstico', d: 'Diagnóstico de errores en la integridad de la PC.', min: 12000 },
+      { id: 'mfull', n: 'Mantenimiento completo con placa de video', d: 'Limpieza del gabinete completo, orden de cables y cambio de pasta térmica Arctic MX-4. Incluye placa de video.', min: 77500, max: 85000, ask: 1 },
+      { id: 'mbasic', n: 'Mantenimiento básico, sin placa de video', d: 'Limpieza básica, orden de cables y pasta térmica Arctic MX-4 en el procesador.', min: 50000 },
+      { id: 'mnote', n: 'Mantenimiento de notebook', d: 'Con cambio de pasta térmica Arctic MX-4.', min: 50000, from: 1, ask: 1 },
+      { id: 'paste', n: 'Cambio de pasta térmica', d: 'Arctic MX-4 o ID-Cooling Frost X25.', min: 17000 },
+      { id: 'gpu', n: 'Limpieza de GPU con cambio de pasta térmica', d: 'Alcohol isopropílico y pasta Arctic MX-4 o ID-Cooling Frost X25. El precio depende de la generación. Los thermal pads se cotizan aparte.', gpu: 1 }
+    ] },
+    { id: 'soft', icon: 'pc', t: 'Sistemas operativos y software', b: 'Windows optimizado, programas de edición y diseño, drivers, BIOS y recuperación de datos.', items: [
+      { id: 'w11', n: 'Windows 10 LTSC / 11 Pro con optimización', d: 'Instalación y optimización del sistema operativo.', min: 35000 },
+      { id: 'w11o', n: 'Windows 10/11 Pro, optimización y Office 2024', d: 'Sistema operativo optimizado más Office 2024, con licencia digital.', min: 50000 },
+      { id: 'w78', n: 'Windows 7 u 8 optimizado', d: 'Libre de bloatware, con mínimos procesos y consumo del sistema al mínimo.', min: 20000 },
+      { id: 'lic', n: 'Licencia de Windows 10/11 digital', d: 'Licencia digital para tu equipo.', min: 10000 },
+      { id: 'oem10', n: 'Licencia de Windows 10 OEM', d: 'Se cotiza según el momento.', min: 20, cur: 'USD', ask: 1 },
+      { id: 'oem11', n: 'Licencia de Windows 11 OEM', d: 'Se cotiza según el momento.', min: 30, cur: 'USD', ask: 1 },
+      { id: 'office', n: 'Instalación de Office', d: 'El valor depende de la versión.', min: 15000, max: 30000 },
+      { id: 'edit', n: 'Combo edición: Premiere Pro, Lightroom y Photoshop', d: 'Instalación y configuración de los tres programas.', min: 20000 },
+      { id: 'adobe', n: 'Pack Adobe CC completo', d: 'Instalación de más de 15 programas.', min: 25000 },
+      { id: 'acad', n: 'AutoCAD 2025', d: 'Instalación y configuración.', min: 50000 },
+      { id: 'opt', n: 'Optimización del sistema', d: 'Menos consumo y carga de discos y procesador, sin procesos innecesarios ni archivos basura. Mejora Windows y la GPU.', min: 15000 },
+      { id: 'bios', n: 'Actualización de BIOS', d: '', min: 15000 },
+      { id: 'drv', n: 'Actualización de drivers', d: '', min: 7500 },
+      { id: 'data', n: 'Recuperación de datos', d: '', min: 10000 },
+      { id: 'disk', n: 'Verificación de unidades de almacenamiento', d: 'Salud, velocidad e integridad de los sectores.', min: 5000 },
+      { id: 'custom', n: 'Programas personalizados', d: 'Contanos qué necesitás instalar y te pasamos el valor.', ask: 1, noprice: 1 }
+    ] },
+    { id: 'ens', icon: 'gpu', t: 'Ensamble, overclock y undervolt', b: 'Armado de tu PC con los componentes que ya compraste y ajustes finos de rendimiento y temperatura.', items: [
+      { id: 'asm', n: 'Ensamblaje con componentes ya comprados', d: '', min: 30000 },
+      { id: 'asmp', n: 'Ensamblaje con cambio de pasta de fábrica por Arctic MX-4', d: '', min: 45000 },
+      { id: 'used', n: 'Ayuda para comprar componentes usados', d: 'CPU, placa de video, RAM y más.', min: 5000, max: 7000, ask: 1 },
+      { id: 'occ', n: 'Overclock de CPU', d: '', min: 4000 },
+      { id: 'uvc', n: 'Undervolt de CPU', d: '', min: 4000 },
+      { id: 'ocuvc', n: 'Overclock y undervolt de CPU', d: '', min: 6000 },
+      { id: 'uvg', n: 'Undervolt de GPU', d: '', min: 4000 },
+      { id: 'ocuvg', n: 'Overclock y undervolt de GPU', d: '', min: 6000 },
+      { id: 'fan', n: 'Curva de ventilación', d: '', min: 5000 }
+    ] }
+  ];
+  var FAQ = [
+    ['¿Qué incluye el mantenimiento completo?', 'Limpieza del gabinete completo, orden de cables y cambio de pasta térmica Arctic MX-4 en el procesador. Incluye la placa de video. Si preferís el básico, queda afuera la placa de video.'],
+    ['¿Por qué la limpieza de GPU tiene distintos precios?', 'El valor cambia según la generación de la placa: va de $30.000 a $38.000. Si necesita cambio de thermal pads, esos se cotizan aparte.'],
+    ['¿Con qué pasta térmica trabajan?', 'Con Arctic MX-4 o ID-Cooling Frost X25, según el servicio.'],
+    ['¿Puedo llevar mis componentes para que me armen la PC?', 'Sí. El ensamblaje con componentes ya comprados cuesta $30.000. Si además cambiamos la pasta de fábrica por Arctic MX-4, son $45.000.'],
+    ['¿Me ayudan a comprar componentes usados?', 'Sí. Te acompañamos en la compra de CPU, placa de video, RAM y más. El valor va de $5.000 a $7.000 y se confirma por WhatsApp.'],
+    ['¿Cómo pido un presupuesto?', 'Armalo en la sección Presupuesto y abrí WhatsApp con tu selección, o contanos qué le pasa a tu equipo desde el formulario de contacto.'],
+    ['¿Dónde los encuentro?', 'En Aguaray 26 y en Barrio Universidad Católica (Zona Norte), en Salta. Las dos sucursales figuran en Google con 5,0 estrellas.']
+  ];
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var fmt = function (n) { return '$ ' + Math.round(n).toLocaleString('es-AR'); };
+  var all = {}; GROUPS.forEach(function (g) { g.items.forEach(function (i) { i.g = g; all[i.id] = i; }); });
+  var sel = ['mbasic', 'opt'], gpuIdx = 0, branch = 0;
+
+  function priceOf(i) {
+    if (i.gpu) return { min: GPU[gpuIdx].p, max: GPU[gpuIdx].p };
+    return { min: i.min, max: i.max || i.min, from: !!i.from };
+  }
+  function priceLabel(i) {
+    if (i.noprice) return { v: 'Consultar', s: '' };
+    if (i.gpu) return { v: fmt(GPU[0].p) + ' a ' + fmt(GPU[GPU.length - 1].p), s: 'según generación' };
+    var cur = i.cur === 'USD' ? 'US$ ' : '$ ';
+    var f = function (n) { return cur + Math.round(n).toLocaleString('es-AR'); };
+    var v = i.max ? f(i.min) + ' a ' + f(i.max) : (i.from ? 'Desde ' : '') + f(i.min);
+    return { v: v, s: i.ask ? 'Consultar cotización' : '' };
+  }
+
+  /* Servicios */
+  var gEl = $('#groups');
+  GROUPS.forEach(function (g) {
+    var rows = g.items.map(function (i) {
+      var p = priceLabel(i);
+      return '<div class="row' + (i.noprice ? ' noadd' : '') + '"><div><h4>' + i.n + '</h4>' + (i.d ? '<p>' + i.d + '</p>' : '') + '</div>' +
+        '<div class="price num">' + p.v + (p.s ? '<small>' + p.s + '</small>' : '') + '</div>' +
+        (i.noprice ? '' : '<button class="add" type="button" data-id="' + i.id + '" aria-pressed="false" aria-label="Sumar ' + i.n + ' al presupuesto">' + ICON.plus + '</button>') + '</div>';
+    }).join('');
+    gEl.insertAdjacentHTML('beforeend',
+      '<div class="svc reveal"><aside class="svc-card"><img src="' + IMG[g.icon] + '" alt="" width="88" height="88"><h3 class="display">' + g.t + '</h3><p>' + g.b + '</p><span class="count">' + g.items.length + ' servicios</span></aside><div class="rows">' + rows + '</div></div>');
+  });
+  gEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.add'); if (!b) return; toggle(b.dataset.id);
+  });
+
+  function toggle(id) { var k = sel.indexOf(id); if (k > -1) sel.splice(k, 1); else sel.push(id); sampleOff(); render(); }
+  function sampleOff() { var n = $('#sampleNote'); if (n) n.textContent = 'Podés sumar o sacar servicios en cualquier momento.'; }
+
+  /* Presupuesto */
+  var shown = 0, raf;
+  function tween(el, to) {
+    var from = shown; shown = to;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = fmt(to); return; }
+    cancelAnimationFrame(raf); var t0 = performance.now();
+    (function step(t) { var k = Math.min(1, (t - t0) / 380), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(from + (to - from) * e); if (k < 1) raf = requestAnimationFrame(step); })(t0);
+  }
+  function render() {
+    document.querySelectorAll('.add').forEach(function (b) {
+      var on = sel.indexOf(b.dataset.id) > -1; b.setAttribute('aria-pressed', on);
+      b.setAttribute('aria-label', (on ? 'Sacar ' : 'Sumar ') + all[b.dataset.id].n + (on ? ' del' : ' al') + ' presupuesto');
+    });
+    var ul = $('#picked'), lo = 0, hi = 0, usd = 0, open = false, ask = false, lines = [];
+    if (!sel.length) ul.innerHTML = '<li class="empty" style="display:block">Todavía no elegiste servicios. Tocá el + en la lista de arriba.</li>';
+    else ul.innerHTML = sel.map(function (id) {
+      var i = all[id], p = priceOf(i), lab = priceLabel(i);
+      if (i.cur === 'USD') usd += i.min; else { lo += p.min; hi += p.max; if (p.from) open = true; }
+      if (i.ask || i.gpu) ask = true;
+      lines.push('- ' + i.n + (i.gpu ? ' (' + GPU[gpuIdx].l + ')' : '') + ': ' + (i.gpu ? fmt(p.min) : lab.v));
+      var gsel = i.gpu ? '<select id="gpuSel" aria-label="Generación de la placa de video">' + GPU.map(function (g, k) { return '<option value="' + k + '"' + (k === gpuIdx ? ' selected' : '') + '>' + g.l + '</option>'; }).join('') + '</select>' : '';
+      return '<li><div><div class="nm">' + i.n + '</div>' + gsel + '</div><div class="pr num">' + (i.gpu ? fmt(p.min) : lab.v) + '</div><button class="rm" type="button" data-rm="' + id + '" aria-label="Sacar ' + i.n + '">' + ICON.x + '</button></li>';
+    }).join('');
+    var label = (open ? 'Desde ' : '') + (lo === hi ? '' : fmt(lo) + ' a ');
+    var tot = $('#total'); tween(tot, hi);
+    // Rango: se muestra el mínimo y el máximo
+    var rangeTxt = lo === hi ? (open ? 'Desde ' : '') + fmt(hi) : fmt(lo) + ' a ' + fmt(hi) + (open ? ' o más' : '');
+    if (lo !== hi || open) { tot.textContent = rangeTxt; shown = hi; }
+    $('#usd').textContent = usd ? '+ US$ ' + usd + ' de licencias OEM (a confirmar)' : '';
+    var msg = 'Hola RaDaz PC, quiero este presupuesto:\n' + (lines.join('\n') || '(sin servicios elegidos)') + '\n\nTotal estimado: ' + (lo === hi ? (open ? 'desde ' : '') + fmt(hi) : fmt(lo) + ' a ' + fmt(hi) + (open ? ' o más' : '')) + (usd ? ' + US$ ' + usd : '') + '\n¿Me confirman el valor y cuándo puedo llevar el equipo?';
+    $('#quoteWa').href = 'https://wa.me/' + BRANCHES[branch].wa + '?text=' + encodeURIComponent(msg);
+    var mb = $('#minibar'); mb.classList.toggle('on', sel.length > 0);
+    $('#miniCount').textContent = sel.length + (sel.length === 1 ? ' servicio elegido' : ' servicios elegidos');
+    $('#miniTotal').textContent = rangeTxt;
+    void ask; void label;
+  }
+  $('#picked').addEventListener('click', function (e) { var b = e.target.closest('[data-rm]'); if (b) toggle(b.dataset.rm); });
+  $('#picked').addEventListener('change', function (e) { if (e.target.id === 'gpuSel') { gpuIdx = +e.target.value; sampleOff(); render(); } });
+
+  /* Selectores de sucursal */
+  var opts = BRANCHES.map(function (b, k) { return '<option value="' + k + '">' + b.n + ' (' + b.addr.split(',')[0] + ')</option>'; }).join('');
+  ['#branchSel', '#cBranch'].forEach(function (s) { $(s).innerHTML = opts; });
+  $('#branchSel').addEventListener('change', function (e) { branch = +e.target.value; $('#cBranch').value = branch; render(); formWa(); navWa(); });
+  $('#cBranch').addEventListener('change', function (e) { branch = +e.target.value; $('#branchSel').value = branch; render(); formWa(); navWa(); });
+  function navWa() { $('#navWa').href = 'https://wa.me/' + BRANCHES[branch].wa + '?text=' + encodeURIComponent('Hola RaDaz PC, quiero hacer una consulta.'); }
+  function formWa() {
+    var n = $('#cName').value.trim(), m = $('#cMsg').value.trim();
+    var t = 'Hola RaDaz PC, soy ' + (n || '(mi nombre)') + '.\nTengo: ' + $('#cType').value + '.\n' + (m ? 'Consulta: ' + m : 'Quiero hacer una consulta.');
+    $('#formWa').href = 'https://wa.me/' + BRANCHES[branch].wa + '?text=' + encodeURIComponent(t);
+  }
+  ['#cName', '#cType', '#cMsg'].forEach(function (s) { $(s).addEventListener('input', formWa); $(s).addEventListener('change', formWa); });
+  $('#contactForm').addEventListener('submit', function (e) { e.preventDefault(); });
+
+  /* Sucursales */
+  function mapSVG(seed) {
+    var r = function (k) { var x = Math.sin(seed * 97 + k * 13.7) * 10000; return x - Math.floor(x); };
+    var s = '<svg viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Mapa ilustrativo, abrí Google Maps para ver la ubicación exacta"><rect width="320" height="160" fill="#0C1510"/>';
+    for (var i = 0; i < 7; i++) { var x = 20 + i * 46 + r(i) * 14; s += '<path d="M' + x + ' 0 L' + (x + (r(i + 9) - .5) * 40) + ' 160" stroke="#1E3326" stroke-width="' + (i % 3 === 0 ? 7 : 3) + '" fill="none"/>'; }
+    for (var j = 0; j < 4; j++) { var y = 18 + j * 40 + r(j + 20) * 14; s += '<path d="M0 ' + y + ' L320 ' + (y + (r(j + 30) - .5) * 40) + '" stroke="#1E3326" stroke-width="' + (j % 2 ? 3 : 7) + '" fill="none"/>'; }
+    for (var b = 0; b < 9; b++) s += '<rect x="' + (10 + r(b + 40) * 280) + '" y="' + (8 + r(b + 50) * 130) + '" width="' + (16 + r(b + 60) * 22) + '" height="' + (10 + r(b + 70) * 16) + '" fill="#13221A" rx="2"/>';
+    s += '<g transform="translate(160 72)"><circle r="26" fill="#A4BE00" opacity=".18"/><path d="M0 22C-10 10-14 2-14-6a14 14 0 0 1 28 0C14 2 10 10 0 22z" fill="#A4BE00"/><circle cy="-6" r="5" fill="#070A08"/></g></svg>';
+    return s;
+  }
+  var bEl = $('#branches');
+  BRANCHES.forEach(function (b) {
+    bEl.insertAdjacentHTML('beforeend',
+      '<article class="branch reveal"><div class="map clip">' + mapSVG(b.seed) + '<a class="btn" href="' + b.maps + '" target="_blank" rel="noopener">Abrir en Google Maps ' + ICON.out + '</a></div>' +
+      '<div class="branch-body"><div><h3 class="display">' + b.n + '</h3></div><div class="meta">' +
+      '<div>' + ICON.pin + '<span>' + b.addr + '</span></div>' +
+      '<div>' + ICON.phone + '<span class="num">' + b.tel + '</span><button class="copy" type="button" data-copy="' + b.tel + '">Copiar</button></div>' +
+      '<div>' + ICON.clock + '<span>' + b.closes + ' (horario de hoy según Google)</span></div></div>' +
+      '<div><span class="stars" role="img" aria-label="5 de 5 estrellas">' + [1, 2, 3, 4, 5].map(function () { return ICON.star; }).join('') + '</span> <strong>' + b.rating + '</strong> <span style="color:var(--mute)">· ' + b.count + ' opiniones en Google</span></div>' +
+      '<ul class="reviews">' + b.rev.map(function (q) { return '<li>“' + q + '”<cite>Opinión de un cliente en Google</cite></li>'; }).join('') + '</ul>' +
+      '<a class="btn btn-ghost" href="https://wa.me/' + b.wa + '" target="_blank" rel="noopener">' + ICON.wa + 'Escribir a esta sucursal</a></div></article>');
+  });
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest('[data-copy]'); if (!c) return; var t = c.dataset.copy;
+    var done = function () { var o = c.textContent; c.textContent = 'Copiado'; setTimeout(function () { c.textContent = o; }, 1400); };
+    try { navigator.clipboard.writeText(t).then(done, function () { fallback(c, t); }); } catch (x) { fallback(c, t); }
+  });
+  function fallback(btn, t) { var s = btn.previousElementSibling; if (s && window.getSelection) { var r = document.createRange(); r.selectNodeContents(s); var g = getSelection(); g.removeAllRanges(); g.addRange(r); } }
+  $('#footBranches').innerHTML = BRANCHES.map(function (b) { return '<a href="https://wa.me/' + b.wa + '" target="_blank" rel="noopener">' + b.n + '<br><span class="num">' + b.tel + '</span></a>'; }).join('');
+
+  /* Antes y después (marcos de ejemplo) */
+  var BA = [['Limpieza a fondo', 'Gabinete y componentes'], ['Cambio de pasta térmica', 'Placa de video'], ['Mantenimiento completo', 'Equipo de escritorio']];
+  $('#ba').innerHTML = BA.map(function (x, k) {
+    return '<figure class="ba" style="margin:0"><div class="ba-fig">' +
+      '<div class="ba-layer ba-before"><div><b>Antes</b><span>Espacio para la foto real del equipo antes del trabajo</span></div></div>' +
+      '<div class="ba-layer ba-after"><div><b>Después</b><span>Espacio para la foto real del equipo terminado</span></div></div>' +
+      '<span class="ba-label l">ANTES</span><span class="ba-label r">DESPUÉS</span><div class="ba-handle"></div>' +
+      '<input type="range" min="0" max="100" value="50" aria-label="Comparar antes y después: ' + x[0] + '"></div>' +
+      '<figcaption>' + x[0] + '<span>' + x[1] + '</span></figcaption></figure>';
+  }).join('');
+  document.querySelectorAll('.ba input').forEach(function (r) {
+    r.addEventListener('input', function () { r.closest('.ba').style.setProperty('--pos', r.value + '%'); });
+  });
+
+  /* FAQ */
+  $('#faqList').innerHTML = FAQ.map(function (f) { return '<details><summary>' + f[0] + ICON.plus + '</summary><p>' + f[1] + '</p></details>'; }).join('');
+
+  /* Ticker: sensible a la dirección del scroll, con pausa */
+  var track = $('#ticker'), tkBtn = $('.ticker-toggle');
+  var tk = ''; for (var t = 0; t < 12; t++) tk += '<span>Tu experiencia, nuestra prioridad</span>';
+  track.innerHTML = tk;
+  if (!reduced && track.animate) {
+    var DUR = 34000, anim = track.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-50%)' }], { duration: DUR, iterations: Infinity, easing: 'linear' });
+    anim.currentTime = DUR;
+    var tkPaused = false, hovering = false, visible = true, lastY = window.scrollY, rate = 1;
+    var sync = function () { if (tkPaused || hovering || !visible) anim.pause(); else anim.play(); };
+    addEventListener('scroll', function () { var d = window.scrollY - lastY; lastY = window.scrollY; if (d) rate = Math.sign(d) * Math.min(1 + Math.abs(d) / 40, 4); }, { passive: true });
+    (function settle() {
+      if (!tkPaused) { var rest = Math.sign(rate) || 1; rate += (rest - rate) * .05; anim.playbackRate = rate; }
+      var ct = anim.currentTime; if (ct != null && ct < 2000) anim.currentTime = ct + DUR;
+      requestAnimationFrame(settle);
+    })();
+    tkBtn.addEventListener('click', function () { tkPaused = !tkPaused; tkBtn.setAttribute('aria-pressed', String(tkPaused)); tkBtn.textContent = tkPaused ? 'Reanudar' : 'Pausar'; sync(); });
+    var wrap = track.closest('.ticker-wrap');
+    wrap.addEventListener('pointerenter', function () { hovering = true; sync(); });
+    wrap.addEventListener('pointerleave', function () { hovering = false; sync(); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; sync(); }).observe(wrap);
+  } else if (tkBtn) tkBtn.hidden = true;
+
+  /* Parallax suave en el hero */
+  var ph = $('.photo');
+  if (ph && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var ticking = false;
+    addEventListener('scroll', function () {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () { var r = ph.getBoundingClientRect(); var p = Math.max(0, Math.min(1, -r.top / (r.height + 200) + .5)); ph.style.setProperty('--p', p.toFixed(3)); ticking = false; });
+    }, { passive: true });
+  }
+
+  navWa(); formWa(); render();
+
+  /* Movimiento propio inspirado en landonorris.com: titulares por palabra, imágenes que se revelan, scroll suave */
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function splitWords(node, c) {
+    Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+      if (n.nodeType === 3) {
+        var f = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function (p) {
+          if (!p) return;
+          if (/^\s+$/.test(p)) { f.appendChild(document.createTextNode(' ')); return; }
+          var w = document.createElement('span'); w.className = 'w'; w.setAttribute('aria-hidden', 'true');
+          var s = document.createElement('span'); s.style.setProperty('--i', c.i++); s.textContent = p; w.appendChild(s); f.appendChild(w);
+        });
+        n.parentNode.replaceChild(f, n);
+      } else if (n.nodeType === 1) splitWords(n, c);
+    });
+  }
+  var splits = document.querySelectorAll('h1.display, .sec-head h2, .about h2, .contact h2');
+  splits.forEach(function (h) { h.setAttribute('aria-label', h.textContent.replace(/\s+/g, ' ').trim()); h.classList.add('split'); splitWords(h, { i: 0 }); });
+  document.documentElement.classList.add('js');
+  var loader = $('[data-rz-loader]'), seen = false;
+  try { seen = !!sessionStorage.getItem('rz-seen'); } catch (e) {}
+  var showLoader = !!loader && !seen && !reduced;
+  if (loader) {
+    if (!showLoader) loader.classList.add('is-gone');
+    else {
+      var fontsReady = (document.fonts && document.fonts.ready) || Promise.resolve();
+      Promise.all([fontsReady, new Promise(function (r) { setTimeout(r, 600); })]).then(function () {
+        loader.classList.add('is-leaving');
+        loader.addEventListener('transitionend', function () { loader.classList.add('is-gone'); }, { once: true });
+        setTimeout(function () { loader.classList.add('is-gone'); }, 1500);
+        try { sessionStorage.setItem('rz-seen', '1'); } catch (e) {}
+      });
+    }
+  }
+  var heroDelay = showLoader ? 900 : 120;
+  function startTyping() {
+    var el = $('[data-rz-type]'); if (!el || reduced) return;
+    var text = el.textContent, i = 0; el.setAttribute('aria-label', text); el.textContent = ''; el.classList.add('is-typing');
+    (function tick() { el.textContent = text.slice(0, ++i); if (i < text.length) setTimeout(tick, 28); else { el.classList.remove('is-typing'); el.classList.add('is-done'); } })();
+  }
+  var heroEls = [$('h1.display'), $('.photo')];
+  var later = document.querySelectorAll('.split, .clip');
+  function show(e) { e.classList.add('in'); }
+  if (reduced || !('IntersectionObserver' in window)) { later.forEach(show); }
+  else {
+    setTimeout(function () { heroEls.forEach(function (e) { if (e) show(e); }); startTyping(); }, heroDelay);
+    var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { show(x.target); io.unobserve(x.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: .15 });
+    later.forEach(function (e) { if (heroEls.indexOf(e) < 0) io.observe(e); });
+  }
+  if ('IntersectionObserver' in window) {
+    var links = document.querySelectorAll('.nav-links a');
+    var nio = new IntersectionObserver(function (es) {
+      es.forEach(function (x) { if (x.isIntersecting) links.forEach(function (l) { l.classList.toggle('on', l.getAttribute('href') === '#' + x.target.id); }); });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    ['inicio', 'servicios', 'presupuesto', 'trabajos', 'sucursales', 'faq'].forEach(function (id) { var s = document.getElementById(id); if (s) nio.observe(s); });
+  }
+
+})();
+</script>
+
+</body></html>

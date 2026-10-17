@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify:prices": "node scripts/verify-prices.mts",
+    "verify:indicators": "node scripts/verify-indicators.mts"
   },
   "dependencies": {
     "next": "16.4.0",

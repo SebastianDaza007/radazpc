@@ -112,6 +112,47 @@ body {
     color: var(--color-lime);
   }
 
+  /* Session loader: hidden unless <html data-loader="on"> (set by the boot script) */
+  .loader {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: none;
+    place-items: center;
+    background: var(--color-lime);
+    clip-path: inset(0);
+    transition: clip-path 0.75s cubic-bezier(0.65, 0.05, 0, 1);
+  }
+  html[data-loader="on"] .loader {
+    display: grid;
+    animation: loader-fail 0.01s 3.5s forwards;
+  }
+  .loader.is-leaving {
+    clip-path: inset(0 0 100% 0);
+  }
+  .loader-logo {
+    width: min(180px, 44vw);
+    height: auto;
+    filter: brightness(0);
+    animation: loader-iso 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+    transition: transform 0.6s cubic-bezier(0.65, 0.05, 0, 1), opacity 0.3s linear;
+  }
+  .loader.is-leaving .loader-logo {
+    transform: translateY(-24px);
+    opacity: 0;
+  }
+  @keyframes loader-iso {
+    from {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+  }
+  @keyframes loader-fail {
+    to {
+      visibility: hidden;
+    }
+  }
+
   /* Hero photo */
   .hero-photo {
     position: relative;
@@ -916,6 +957,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .loader {
+    display: none !important;
+  }
   .ticker-toggle {
     display: none;
   }

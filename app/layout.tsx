@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Geist } from "next/font/google";
 import "./globals.css";
 import Loader from "@/components/Loader";
 import { LOADER_BOOT_SCRIPT } from "@/lib/loader";
@@ -7,11 +7,6 @@ import { site } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -33,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${archivo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <script dangerouslySetInnerHTML={{ __html: LOADER_BOOT_SCRIPT }} />

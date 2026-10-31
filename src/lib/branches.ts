@@ -7,7 +7,7 @@ export type Branch = {
   phone: string;
   /** International format without "+", as wa.me expects. */
   whatsapp: string;
-  rating: string;
+  rating: number;
   reviewCount: number;
   closes: string;
   maps: string;
@@ -26,7 +26,7 @@ export const branches: Branch[] = [
     address: "Aguaray 26, Salta",
     phone: "0387 565-9971",
     whatsapp: "5493875659971",
-    rating: "5,0",
+    rating: 5,
     reviewCount: 100,
     closes: "Cierra a las 23:00",
     maps: "https://share.google/foh3FmaJg60LdA0tW",
@@ -45,7 +45,7 @@ export const branches: Branch[] = [
       "Barrio Universidad Católica, Mz. 507 Casa 18, San Mateo Apóstol esquina San Pedro Apóstol, Salta",
     phone: "0387 527-8489",
     whatsapp: "5493875278489",
-    rating: "5,0",
+    rating: 5,
     reviewCount: 58,
     closes: "Cierra a las 23:00",
     maps: "https://share.google/1ElvXF3u6CROHY2Il",
@@ -59,6 +59,14 @@ export const branches: Branch[] = [
 ];
 
 export const totalReviews = branches.reduce((sum, b) => sum + b.reviewCount, 0);
+
+/** Review-weighted average rating across branches. */
+export const averageRating = branches.reduce((sum, b) => sum + b.rating * b.reviewCount, 0) / totalReviews;
+
+/** es-AR rating with one decimal ("5,0"). */
+export function formatRating(rating: number): string {
+  return rating.toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
 
 export function whatsappUrl(branch: Branch, text?: string): string {
   const base = `https://wa.me/${branch.whatsapp}`;

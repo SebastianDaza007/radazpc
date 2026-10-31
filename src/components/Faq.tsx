@@ -1,5 +1,5 @@
 import { formatMoney } from "@/lib/format";
-import { branches } from "@/lib/branches";
+import { averageRating, branches, formatRating } from "@/lib/branches";
 import { findItem } from "@/lib/quote";
 import type { PriceCatalog } from "@/lib/services.types";
 
@@ -42,7 +42,7 @@ function buildFaq(catalog: PriceCatalog): [string, string][] {
     ],
     [
       "¿Dónde los encuentro?",
-      `En ${branches[0].street} y en ${branches[1].street} (Zona Norte), en Salta. Las dos sucursales figuran en Google con 5,0 estrellas.`,
+      `En ${branches[0].street} y en ${branches[1].street} (Zona Norte), en Salta. Las dos sucursales promedian ${formatRating(averageRating)} estrellas en Google.`,
     ],
   ];
 }

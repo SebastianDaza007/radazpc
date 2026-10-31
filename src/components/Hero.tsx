@@ -1,13 +1,7 @@
 import Image from "next/image";
-import { branches, RATINGS_DATE, totalReviews } from "@/lib/branches";
+import { averageRating, branches, formatRating, RATINGS_DATE, totalReviews } from "@/lib/branches";
 import { site } from "@/lib/site";
-
-/** Review-weighted average rating across branches, es-AR formatted ("5,0"). */
-function averageRating(): string {
-  const toNumber = (r: string) => Number(r.replace(",", "."));
-  const avg = branches.reduce((sum, b) => sum + toNumber(b.rating) * b.reviewCount, 0) / totalReviews;
-  return avg.toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-}
+import Stars from "./Stars";
 
 export default function Hero() {
   return (
@@ -28,15 +22,9 @@ export default function Hero() {
           </div>
           <div className="text-sm text-mist/70">
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="stars" role="img" aria-label="5 de 5 estrellas">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <svg key={i} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z" />
-                  </svg>
-                ))}
-              </span>
+              <Stars rating={averageRating} />
               <span>
-                <strong className="text-mist">{averageRating()}</strong> en Google · <strong className="text-mist">{totalReviews}</strong> opiniones en {branches.length === 2 ? "dos" : branches.length} sucursales
+                <strong className="text-mist">{formatRating(averageRating)}</strong> en Google · <strong className="text-mist">{totalReviews}</strong> opiniones en {branches.length === 2 ? "dos" : branches.length} sucursales
               </span>
             </p>
             <p className="mt-1 text-xs text-mist/50">Valoraciones al {RATINGS_DATE}</p>

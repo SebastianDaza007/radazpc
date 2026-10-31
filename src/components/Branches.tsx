@@ -1,17 +1,6 @@
-import { branches, RATINGS_DATE, totalReviews, whatsappUrl, type Branch } from "@/lib/branches";
+import { averageRating, branches, formatRating, RATINGS_DATE, totalReviews, whatsappUrl, type Branch } from "@/lib/branches";
 import CopyButton from "./CopyButton";
-
-function Stars({ className = "" }: { className?: string }) {
-  return (
-    <span className={`stars ${className}`} role="img" aria-label="5 de 5 estrellas">
-      {Array.from({ length: 5 }, (_, i) => (
-        <svg key={i} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.8 21.4l1.5-7.1L1.9 9.4l7.2-.8z" />
-        </svg>
-      ))}
-    </span>
-  );
-}
+import Stars from "./Stars";
 
 /** Decorative street-map pattern, deterministic per branch. */
 function MapArt({ seed }: { seed: number }) {
@@ -63,11 +52,13 @@ function BranchCard({ branch }: { branch: Branch }) {
             <CopyButton text={branch.phone} label={`Copiar teléfono de ${branch.name}`} />
           </div>
           <div>
-            <span>{branch.closes} (horario de hoy según Google)</span>
+            <span>
+              {branch.closes} (según Google al {RATINGS_DATE})
+            </span>
           </div>
         </div>
         <div>
-          <Stars /> <strong>{branch.rating}</strong>{" "}
+          <Stars rating={branch.rating} /> <strong>{formatRating(branch.rating)}</strong>{" "}
           <span className="text-mist/60">
             · {branch.reviewCount} opiniones en Google (al {RATINGS_DATE})
           </span>
@@ -94,9 +85,9 @@ export default function Branches() {
         <p className="eyebrow">Sucursales y opiniones</p>
         <h2 className="display mt-4 text-3xl sm:text-5xl">Dos puntos en Salta. Clientes que ya nos eligieron.</h2>
         <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
-          <span className="display text-5xl text-lime sm:text-6xl">5,0</span>
+          <span className="display text-5xl text-lime sm:text-6xl">{formatRating(averageRating)}</span>
           <span>
-            <Stars />
+            <Stars rating={averageRating} />
             <br />
             <span className="text-sm text-mist/60">
               {totalReviews} opiniones en Google entre las dos sucursales (al {RATINGS_DATE})

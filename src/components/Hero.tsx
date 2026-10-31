@@ -10,7 +10,7 @@ export default function Hero() {
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 md:grid-cols-2 md:py-28">
         <div className="flex flex-col gap-6">
           <p className="eyebrow">{site.location}</p>
-          <h1 className="display text-4xl uppercase leading-[0.95] tracking-tight sm:text-6xl">{site.tagline}</h1>
+          <h1 className="display text-[clamp(1.75rem,9vw,2.25rem)] uppercase leading-[0.95] tracking-tight sm:text-6xl">{site.tagline}</h1>
           <p className="max-w-md text-lg text-mist/70">Armado a medida y mantenimiento de PC en Salta Capital. Con precios a la vista y presupuesto armado en minutos.</p>
           <div className="flex flex-wrap gap-4">
             <a href="#presupuesto" className="btn-lime">

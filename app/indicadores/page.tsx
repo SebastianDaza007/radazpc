@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
-import IndicatorsLogin from "@/components/IndicatorsLogin";
+import { redirect } from "next/navigation";
 import IndicatorsView from "@/components/IndicatorsView";
 import { getIndicators } from "@/lib/indicators";
 import { AUTH_COOKIE, authConfigured, tokenMatches } from "@/lib/indicators.auth";
@@ -14,16 +14,16 @@ export const metadata: Metadata = {
 };
 
 async function Gate() {
-  // GUARD (fail closed): without INDICATORS_PASSWORD no data is ever rendered.
+  // Fail closed: without admin credentials no data is rendered.
   if (!authConfigured()) {
     return (
       <p className="mt-10 rounded-lg border border-dashed border-mist/20 p-6 text-mist/70">
-        Indicadores deshabilitados: falta definir INDICATORS_PASSWORD en el servidor.
+        Indicadores deshabilitados: falta configurar el acceso de administradores.
       </p>
     );
   }
   const token = (await cookies()).get(AUTH_COOKIE)?.value;
-  if (!tokenMatches(token)) return <IndicatorsLogin />;
+  if (!tokenMatches(token)) redirect("/admin/login");
 
   const data = await getIndicators();
   return (

@@ -9,7 +9,9 @@
     "lint": "eslint",
     "verify:prices": "node scripts/verify-prices.mts",
     "verify:indicators": "node scripts/verify-indicators.mts",
-    "verify:sheets": "node --env-file=.env.local scripts/verify-sheets.mts"
+    "verify:auth": "node scripts/verify-auth.mts",
+    "verify:sheets": "node --env-file=.env.local scripts/verify-sheets.mts",
+    "admin:setup": "node scripts/setup-admin.mts"
   },
   "dependencies": {
     "next": "16.4.0",

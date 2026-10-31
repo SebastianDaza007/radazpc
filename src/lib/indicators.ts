@@ -2,9 +2,10 @@ import { cacheLife } from "next/cache";
 import { buildIndicators, collectTabs, mergeTabs, resolveTabs } from "./indicators.parse.ts";
 import { SAMPLE_JOBS } from "./indicators.sample.ts";
 import type { IndicatorsData, IndicatorSource } from "./indicators.types.ts";
+import { readSheetCsv, readSheetTabs } from "./sheets.ts";
 
 /**
- * Internal indicators. SERVER ONLY, and only after the password gate (see app/indicadores).
+ * Internal indicators. SERVER ONLY, and only after the admin login gate (see app/indicadores).
  *
  * The source is swappable (INDICATORS_SOURCE):
  *  - "sheets" (default when INDICATORS_SHEET_ID is set): reads the payments log from Google Sheets.
@@ -16,18 +17,18 @@ import type { IndicatorsData, IndicatorSource } from "./indicators.types.ts";
  *   When unset, tabs are generated as RP-MM-AA (and RP-M-AA) from 08-24 up to the current month.
  *   Tabs that don't exist are skipped; "Trabajos" is always excluded. See collectTabs in indicators.parse.ts.
  */
-function tabUrl(sheetId: string, tab: string): string {
-  // headers=0: the sheet has a merged title above the header row, so we locate the header ourselves.
-  return `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/gviz/tq?tqx=out:csv&headers=0&sheet=${encodeURIComponent(tab)}`;
-}
-
 export function sheetsSource(sheetId: string, tabs: string[]): IndicatorSource {
   return {
     async load() {
+      const available = new Map((await readSheetTabs(sheetId)).map((tab) => [tab.name, tab.gid]));
+      const existing = tabs.filter((tab) => available.has(tab));
+      if (!existing.length) throw new Error("No hay pestañas mensuales disponibles");
+      let failed = false;
       const parsed = await collectTabs(async (tab) => {
-        const res = await fetch(tabUrl(sheetId, tab), { signal: AbortSignal.timeout(10000) });
-        return res.ok ? res.text() : null;
-      }, tabs);
+        try { return await readSheetCsv(sheetId, available.get(tab)!); }
+        catch { failed = true; return null; }
+      }, existing);
+      if (failed) throw new Error("Lectura mensual incompleta; reintentá más tarde");
       return mergeTabs(parsed);
     },
   };
@@ -51,7 +52,7 @@ export async function getIndicators(): Promise<IndicatorsData | null> {
   try {
     return buildIndicators(await source.load());
   } catch (error) {
-    console.error("[indicators] no se pudo leer la fuente:", error instanceof Error ? error.message : error);
+    console.error("[indicators] no se pudo leer la fuente", error instanceof Error ? error.name : "Error");
     return null;
   }
 }

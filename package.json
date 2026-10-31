@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "verify:prices": "node scripts/verify-prices.mts",
-    "verify:indicators": "node scripts/verify-indicators.mts"
+    "verify:indicators": "node scripts/verify-indicators.mts",
+    "verify:sheets": "node --env-file=.env.local scripts/verify-sheets.mts"
   },
   "dependencies": {
     "next": "16.4.0",

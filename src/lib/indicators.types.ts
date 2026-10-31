@@ -9,7 +9,7 @@ export type MedioPago = "transferencia" | "efectivo" | "otro" | null;
 export const TIPO_SIN_ESPECIFICAR = "Sin especificar";
 
 /**
- * One row of the payments log. SERVER ONLY. Customer names and phones are never read into this
+ * One row of the payments log. SERVER ONLY. Customer names and phones are never included in this
  * model, and the model itself is never serialized to the browser: only `IndicatorsData` is.
  */
 export type Job = {

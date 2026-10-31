@@ -40,3 +40,31 @@ assert.ok(msg.includes("Limpieza de GPU"));
 assert.equal(priceLabel(FALLBACK_CATALOG.groups[1].items.at(-1)!).value, "Consultar");
 
 console.log("verify-prices: ok");
+
+const list = [
+  ',PRECIOS',
+  '💻ＲＥＶＩＳＩＯＮ Ｙ ＤＩＡＧＮＯＳＴＩＣＯ🔧,',
+  'Revisión y Diagnóstico de errores,"$12,000"',
+  '💻ＭＡＮＴＥＮＩＭＩＥＮＴＯ Ｙ ＬＩＭＰＩＥＺＡ🔧,',
+  'Mantenimiento de hardware completo // Solicitar Cotizacion //,"77500 - 85,000"',
+  'Mantenimiento de Notebook,Desde $ 50000',
+  'Limpieza de GPU,27500-35000',
+  '💻ＳＩＳＴＥＭＡＳ ＯＰＥＲＡＴＩＶＯＳ Ｙ ＳＯＦＴＷＡＲＥ🔧,',
+  'LICENCIA DE WINDOWS 10 OEM,20 USD',
+  'Instalacion de Widows 8 OPTIMIZADO,"$20,000"',
+  'Instalación de Windows 7 OPTIMIZADO,"$20,000"',
+  '💻CONSULTAR LA INSTALACION DE PROGRAMAS PERSONALIZADOS💻,-',
+].join("\n");
+const live = parsePricesCsv(list, GROUP_META);
+const find = (id: string) => live.groups.flatMap((group) => group.items).find((item) => item.id === id)!;
+assert.equal(find("mfull").max, 85000);
+assert.equal(find("mnote").from, true);
+assert.equal(find("oem10").currency, "USD");
+assert.equal(find("oem10").min, 20);
+assert.equal(find("custom").min, undefined);
+assert.notEqual(find("w7").id, find("w8").id);
+const changed = parsePricesCsv(list.replace("$12,000", "$18,000"), GROUP_META);
+assert.equal(computeQuote(changed, ["diag"]).hi, 18000, "a Sheet price change updates the quote");
+assert.throws(() => parsePricesCsv(list.replace("27500-35000", "35000-27500"), GROUP_META));
+assert.throws(() => parsePricesCsv("<!DOCTYPE html><html>login</html>", GROUP_META));
+console.log("verify-prices real-format: ok");

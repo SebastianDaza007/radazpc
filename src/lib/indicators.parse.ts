@@ -1,4 +1,5 @@
 import { parseCsv } from "./prices.parse.ts";
+import { createHash } from "node:crypto";
 import {
   TIPO_SIN_ESPECIFICAR,
   type BranchFilter,
@@ -145,10 +146,10 @@ export type ParsedTab = { jobs: Job[]; keys: string[] };
 /**
  * Parses one tab. Columns are located by header NAME, so the title block above the headers
  * ("REGISTRO DE PAGOS - RADAZPC" in merged cells), shifted header rows and column order don't matter.
- * Customer name and phone columns ("Nombre Cliente/ Telefono", "Telefono") are never read. Skips blank rows, device-only rows
+ * Customer names are hashed only for server deduplication; they never enter the Job model. Skips blank rows, device-only rows
  * ("NOTEBOOK"), "Total del Mes" rows and rows without a valid date, so sheet totals are ignored:
  * every figure is computed from the job rows.
- * `keys` are date|status|amount fingerprints used to drop rows repeated across tabs.
+ * `keys` are identity-aware hashes used to drop rows repeated across tabs.
  */
 export function parseJobsCsv(csv: string): ParsedTab {
   const rows = parseCsv(csv);
@@ -158,6 +159,7 @@ export function parseJobsCsv(csv: string): ParsedTab {
   });
   if (headerAt < 0) return { jobs: [], keys: [] };
   const col = findColumns(rows[headerAt]);
+  const customerCol = rows[headerAt].map(normHeader).findIndex((h) => h.startsWith("nombre cliente"));
   const cell = (r: string[], c: Column) => (col[c] !== undefined ? r[col[c]!] : undefined);
   const jobs: Job[] = [];
   const keys: string[] = [];
@@ -181,7 +183,9 @@ export function parseJobsCsv(csv: string): ParsedTab {
       sucursal: normalizeBranch(cell(r, "sucursal")),
     });
     // Date + status + amount: stable across tabs with different column order.
-    keys.push(`${fecha}|${estado}|${monto}`);
+    // Hash the identity only for deduplication on the server. It never enters Job or browser data.
+    const identity = customerCol >= 0 ? norm(r[customerCol] ?? "") : "";
+    keys.push(createHash("sha256").update(`${fecha}|${estado}|${monto}|${normalizeTipo(cell(r, "tipo"))}|${identity}`).digest("hex"));
   }
   return { jobs, keys };
 }
@@ -191,16 +195,18 @@ export function parseJobsCsv(csv: string): ParsedTab {
  * (e.g. a "RP-10-24" tab that repeats September 2024). Repeats inside one tab are kept.
  */
 export function mergeTabs(tabs: ParsedTab[]): Job[] {
-  const seen = new Set<string>();
+  const seen = new Map<string, number>();
   const all: Job[] = [];
   for (const tab of tabs) {
-    const fresh: string[] = [];
+    const occurrences = new Map<string, number>();
     tab.jobs.forEach((job, i) => {
-      if (seen.has(tab.keys[i])) return;
-      fresh.push(tab.keys[i]);
+      const key = tab.keys[i];
+      const count = (occurrences.get(key) ?? 0) + 1;
+      occurrences.set(key, count);
+      if (count <= (seen.get(key) ?? 0)) return;
       all.push(job);
     });
-    fresh.forEach((k) => seen.add(k));
+    occurrences.forEach((count, key) => seen.set(key, Math.max(count, seen.get(key) ?? 0)));
   }
   return all;
 }

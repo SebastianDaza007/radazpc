@@ -37,7 +37,7 @@ function Bars({ title, rows }: { title: string; rows: GroupTotal[] }) {
 /** Receives aggregates only. Never pass raw sheet rows into this component. */
 export default function IndicatorsView({ data }: { data: IndicatorsData | null }) {
   const [filter, setFilter] = useState<BranchFilter>("todas");
-  const [month, setMonth] = useState("todos");
+  const [month, setMonth] = useState(data?.summaries.todas.byMonth.at(-1)?.month ?? "todos");
 
   if (!data) {
     return (
@@ -106,6 +106,7 @@ export default function IndicatorsView({ data }: { data: IndicatorsData | null }
           </select>
         </div>
       </div>
+      <p className="text-sm text-mist/60">Importes de trabajos completados, agrupados por fecha de inicio. No representan ganancia neta. Los cambios de la planilla se consultan automáticamente al renovar los datos (cada 15 minutos, según las visitas).</p>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => (
           <li key={k.label} className="rounded-lg border border-mist/10 bg-ink-2 p-6">
@@ -126,7 +127,7 @@ export default function IndicatorsView({ data }: { data: IndicatorsData | null }
                 <span className="h-3 rounded bg-moss-deep" aria-hidden="true">
                   <span className="block h-3 rounded bg-lime" style={{ width: `${(p.revenue / peak) * 100}%` }} />
                 </span>
-                <span className="text-right tabular-nums">{formatMoney(p.revenue)}</span>
+                <span className="text-right tabular-nums">{p.jobs ? formatMoney(p.revenue) : "Sin registros"}</span>
               </li>
             ))}
           </ul>

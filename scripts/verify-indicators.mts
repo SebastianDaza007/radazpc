@@ -207,3 +207,15 @@ recordSuccess("ip-test");
 assert.equal(getAttempts("ip-test").fails, 0);
 
 console.log("verify-indicators: ok");
+
+const sameDay = [
+  "Fecha de inicio,Estado,Monto,Nombre Cliente,Trabajo/s",
+  "1/5/26,Completada,10000,Cliente Inventado A,Diagnóstico",
+  "1/5/26,Completada,10000,Cliente Inventado B,Diagnóstico",
+].join("\n");
+const first = parseJobsCsv(sameDay);
+const second = parseJobsCsv(sameDay + "\n1/5/26,Completada,10000,Cliente Inventado C,Diagnóstico");
+assert.equal(mergeTabs([first, second]).length, 3, "different customers on the same day are preserved");
+const repeated = parseJobsCsv(sameDay + "\n1/5/26,Completada,10000,Cliente Inventado A,Diagnóstico");
+assert.equal(mergeTabs([first, repeated]).length, 3, "identical row multiplicity is preserved");
+assert.ok(!JSON.stringify(first).includes("Cliente Inventado"), "customer identity only survives as server hash");

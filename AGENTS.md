@@ -14,7 +14,7 @@ Landing de Radaz PC, mantenimiento y armado de PC en Salta Capital, Argentina. E
 
 ## Stack
 - Next.js 16 (App Router), React 19, Tailwind CSS 4, TypeScript.
-- Sin base de datos ni backend por ahora.
+- Sin base de datos. Lectura de Google Sheets y autenticación de administradores en el servidor; ver `docs/OPERACION.md`.
 
 ## Estructura
 - `app/`: rutas y layout. El App Router va en la raíz; no usar `src/app`.

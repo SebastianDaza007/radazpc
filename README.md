@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Radaz PC
+
+Sitio público con precios desde Google Sheets y panel de indicadores mensuales protegido por un acceso de administradores. Configuración, actualización de datos y credenciales: [guía de operación](docs/OPERACION.md).
+
+El proyecto se inició con `create-next-app`; las instrucciones básicas de desarrollo siguen debajo.
 
 ## Getting Started
 

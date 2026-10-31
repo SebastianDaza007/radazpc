@@ -10,7 +10,7 @@ export default function About() {
         <div className="about-fig">
           <Image
             src="/brand/artefacto/img05.webp"
-            alt="El Sabio, personaje de la marca: un mago sentado con una placa de video como cabeza y el isotipo de RaDaz PC en la pantalla"
+            alt={`El Sabio, personaje de la marca: un mago sentado con una placa de video como cabeza y el isotipo de ${site.name} en la pantalla`}
             width={735}
             height={1000}
             sizes="(max-width: 768px) 250px, 440px"
@@ -20,7 +20,7 @@ export default function About() {
           <p className="eyebrow">Quiénes somos</p>
           <h2 className="display mt-4 text-3xl sm:text-5xl">El aliado técnico de tu PC.</h2>
           <p className="mt-4 max-w-[58ch] text-mist/75">
-            RaDaz PC ofrece servicios personalizados y de alta calidad en mantenimiento y personalización de PC. Buscamos
+            {site.name} ofrece servicios personalizados y de alta calidad en mantenimiento y personalización de PC. Buscamos
             que cada cliente se lleve su equipo funcionando mejor y entienda qué se le hizo.
           </p>
           <p className="mt-4 max-w-[58ch] text-mist/75">

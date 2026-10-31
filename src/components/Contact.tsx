@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { branches, whatsappUrl } from "@/lib/branches";
+import { site } from "@/lib/site";
 import { useQuote } from "./QuoteProvider";
 
 const equipment = ["PC de escritorio", "Notebook", "PC armada por mí", "Otro"];
@@ -13,7 +14,7 @@ export default function Contact() {
   const [message, setMessage] = useState("");
 
   const text = [
-    `Hola RaDaz PC, soy ${name.trim() || "(mi nombre)"}.`,
+    `Hola ${site.name}, soy ${name.trim() || "(mi nombre)"}.`,
     `Tengo: ${type}.`,
     message.trim() ? `Consulta: ${message.trim()}` : "Quiero hacer una consulta.",
   ].join("\n");

@@ -1,5 +1,6 @@
 import { formatMoney, isQuoteOnly, priceLabel } from "./format.ts";
 import type { PriceCatalog, ServiceItem } from "./services.types.ts";
+import { site } from "./site.ts";
 
 export type QuoteLine = { item: ServiceItem; label: string; amount: number };
 
@@ -60,7 +61,7 @@ export function buildQuoteMessage(quote: Quote): string {
   const lines = quote.lines.map(({ item, label }) => `- ${item.name}: ${label}`);
   const total = quote.rangeText.replace(/^Desde/, "desde");
   return [
-    "Hola RaDaz PC, quiero este presupuesto:",
+    `Hola ${site.name}, quiero este presupuesto:`,
     lines.join("\n") || "(sin servicios elegidos)",
     "",
     `Total estimado: ${total}${quote.usd ? ` + US$ ${quote.usd}` : ""}`,

@@ -1,0 +1,24 @@
+import assert from "node:assert/strict";
+import { readSheetCsv, readSheetTabs } from "../src/lib/sheets.ts";
+import { parsePricesCsv } from "../src/lib/prices.parse.ts";
+import { GROUP_META } from "../src/lib/services.fallback.ts";
+import { buildIndicators, collectTabs, mergeTabs, resolveTabs } from "../src/lib/indicators.parse.ts";
+
+const { PRICES_SHEET_ID, PRICES_SHEET_GID, INDICATORS_SHEET_ID } = process.env;
+assert.ok(PRICES_SHEET_ID && PRICES_SHEET_GID && INDICATORS_SHEET_ID, "Configurar las dos fuentes en .env.local");
+const catalog = parsePricesCsv(await readSheetCsv(PRICES_SHEET_ID, PRICES_SHEET_GID), GROUP_META);
+const items = catalog.groups.flatMap((group) => group.items);
+assert.ok(items.length > 0);
+assert.equal(new Set(items.map((item) => item.id)).size, items.length);
+console.log(`Precios reales: ${catalog.groups.length} grupos, ${items.length} servicios; CSV leído sin respaldo.`);
+const available = await readSheetTabs(INDICATORS_SHEET_ID);
+const expected = resolveTabs(process.env.INDICATORS_SHEET_TABS, new Date());
+const monthly = expected.flatMap((name) => available.filter((tab) => tab.name === name));
+assert.ok(monthly.length > 0);
+const parsed = await collectTabs(async (gid) => readSheetCsv(INDICATORS_SHEET_ID, gid), monthly.map((tab) => tab.gid));
+assert.equal(parsed.length, monthly.length, "Todas las pestañas mensuales deben poder leerse");
+const jobs = mergeTabs(parsed);
+assert.ok(jobs.length > 0);
+const data = buildIndicators(jobs);
+assert.ok(data.summaries.todas.completedJobs > 0);
+console.log(`Indicadores reales: ${monthly.length} pestañas, ${jobs.length} trabajos, ${Object.keys(data.summaries.todas.perMonth).length} meses con datos. Solo se entregan agregados.`);

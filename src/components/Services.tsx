@@ -1,25 +1,55 @@
 import Image from "next/image";
+import { isQuoteOnly, priceLabel } from "@/lib/format";
+import type { PriceCatalog } from "@/lib/services.types";
+import AddButton from "./AddButton";
 
-const services = [
-  { title: "Armado a medida", text: "Elegimos los componentes junto con vos según el uso y el presupuesto, y armamos la PC completa.", icon: "/brand/web/icono-pc.png" },
-  { title: "Mantenimiento", text: "Limpieza interna, revisión de temperaturas y puesta a punto para que el equipo rinda como el primer día.", icon: "/brand/web/icono-tools.png" },
-  { title: "Actualización", text: "Sumamos o reemplazamos componentes para mejorar tu equipo sin empezar de cero.", icon: "/brand/web/icono-grafica.png" },
-];
+const ICONS = {
+  pc: "/brand/artefacto/img06.webp",
+  gpu: "/brand/artefacto/img07.webp",
+} as const;
 
-export default function Services() {
+export default function Services({ catalog }: { catalog: PriceCatalog }) {
   return (
-    <section id="servicios" className="mx-auto w-full max-w-6xl px-6 py-24">
-      <h2 className="mb-12 text-3xl font-semibold uppercase tracking-tight sm:text-5xl">Servicios</h2>
-      <div className="grid gap-px overflow-hidden rounded-2xl border border-mist/10 bg-mist/10 md:grid-cols-3">
-        {services.map((service, i) => (
-          <article key={service.title} className="flex flex-col gap-4 bg-ink p-8 transition-colors hover:bg-moss/40">
-            <div className="flex items-center justify-between">
-              <Image src={service.icon} alt="" width={256} height={256} className="h-14 w-14" />
-              <span className="font-mono text-sm text-lime">0{i + 1}</span>
+    <section id="servicios" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24">
+      <div className="mb-12 max-w-3xl">
+        <p className="eyebrow">Servicios y precios</p>
+        <h2 className="display mt-4 text-3xl sm:text-5xl">Todo lo que le hacemos a tu PC, con el precio al lado.</h2>
+        <p className="mt-4 max-w-[60ch] text-mist/70">
+          Tocá el botón + de cualquier servicio para sumarlo a tu presupuesto. Los precios están en pesos argentinos y los
+          que dicen &quot;consultar&quot; se confirman por WhatsApp.
+        </p>
+      </div>
+      <div>
+        {catalog.groups.map((group) => (
+          <div key={group.id} className="svc">
+            <aside className="svc-card">
+              <Image src={ICONS[group.icon]} alt="" width={88} height={88} className="svc-card-icon" />
+              <h3 className="display text-xl sm:text-2xl">{group.title}</h3>
+              {group.blurb && <p>{group.blurb}</p>}
+              <span className="count">
+                {group.items.length} {group.items.length === 1 ? "servicio" : "servicios"}
+              </span>
+            </aside>
+            <div className="rows">
+              {group.items.map((item) => {
+                const price = priceLabel(item);
+                const quoteOnly = isQuoteOnly(item);
+                return (
+                  <div key={item.id} className={`row${quoteOnly ? " row-static" : ""}`}>
+                    <div>
+                      <h4>{item.name}</h4>
+                      {item.description && <p>{item.description}</p>}
+                    </div>
+                    <div className="price">
+                      {price.value}
+                      {price.note && <small>{price.note}</small>}
+                    </div>
+                    {!quoteOnly && <AddButton id={item.id} name={item.name} />}
+                  </div>
+                );
+              })}
             </div>
-            <h3 className="text-xl font-semibold">{service.title}</h3>
-            <p className="text-mist/70">{service.text}</p>
-          </article>
+          </div>
         ))}
       </div>
     </section>
